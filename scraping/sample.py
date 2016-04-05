@@ -32,7 +32,6 @@ def getTitle(url):
     except HTTPError as e:
         print(e)
         return None
-
     try:
         bsObj = BeautifulSoup(html.read(), 'lxml')
         title = bsObj.body.h1
@@ -42,7 +41,26 @@ def getTitle(url):
     return title
 
 
+def getSiteHTML(url):
+    """HTMLを BeautifulSoup オブジェクトとして取得する"""
+    try:
+        html = urlopen(url)
+    except HTTPError as e:
+        print(e)
+        return None
+    except URLError as e:
+        print("The server could not be found!")
+        return None
+    else:
+        bsObj = BeautifulSoup(html, 'lxml')
+
+    return bsObj
+
+
 if __name__ == '__main__':
     # exec_beautifulsoup_sample()
-    getTitle("http://www.pythonscraping.com/pages/page1.html")
-    getTitle("http://wwww.pythonscraping.com/pages/page1.html")
+    # getTitle("http://www.pythonscraping.com/pages/page1.html")
+    # getTitle("http://wwww.pythonscraping.com/pages/page1.html")
+    bsObj = getSiteHTML("http://www.pythonscraping.com/pages/warandpeace.html")
+    
+    
