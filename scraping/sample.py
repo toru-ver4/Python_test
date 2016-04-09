@@ -10,7 +10,7 @@ import sys
 from urllib.request import urlopen
 from urllib.error import HTTPError
 from bs4 import BeautifulSoup
-
+import pandas
 
 def exec_beautifulsoup_sample():
 
@@ -55,6 +55,12 @@ def getSiteHTML(url):
         bsObj = BeautifulSoup(html, 'lxml')
 
     return bsObj
+
+
+def get_garupan_anime_title():
+    url = "https://ja.wikipedia.org/wiki/%E3%82%AC%E3%83%BC%E3%83%AB%E3%82%BA%26%E3%83%91%E3%83%B3%E3%83%84%E3%82%A1%E3%83%BC"
+    pandas_obj = pandas.io.html.read_html(url)
+    print(pandas_obj[3][0] + " " + pandas_obj[3][0])
 
 
 if __name__ == '__main__':
