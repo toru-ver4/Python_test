@@ -63,10 +63,27 @@ def get_garupan_anime_title():
     print(pandas_obj[3][0] + " " + pandas_obj[3][0])
 
 
+def get_anime_title_from_wikipedia(url):
+    pandas_obj = pandas.io.html.read_html(url)
+    # print(pandas_obj)
+
+    index = None
+    for idx, dataframe in enumerate(pandas_obj):
+        if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
+            index = idx
+            break
+    if index:
+        not_nan_idx = (pandas_obj[index][1].isnull() != True)
+        title_list = pandas_obj[index][0][not_nan_idx].values + " " + pandas_obj[index][1][not_nan_idx].values
+        for title_name in title_list:
+            print(title_name)    
+
+
 if __name__ == '__main__':
+    pass
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
     # getTitle("http://wwww.pythonscraping.com/pages/page1.html")
-    bsObj = getSiteHTML("http://www.pythonscraping.com/pages/warandpeace.html")
+    # bsObj = getSiteHTML("http://www.pythonscraping.com/pages/warandpeace.html")
     
     
