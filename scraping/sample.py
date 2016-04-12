@@ -41,8 +41,8 @@ def getTitle(url):
     return title
 
 
-def getSiteHTML(url):
-    """HTMLを BeautifulSoup オブジェクトとして取得する"""
+def get_site_html(url):
+    """urlopen() で取得したHTMLを返す"""
     try:
         html = urlopen(url)
     except HTTPError as e:
@@ -52,9 +52,7 @@ def getSiteHTML(url):
         print("The server could not be found!")
         return None
     else:
-        bsObj = BeautifulSoup(html, 'lxml')
-
-    return bsObj
+        return html
 
 
 def get_garupan_anime_title():
@@ -64,19 +62,30 @@ def get_garupan_anime_title():
 
 
 def get_anime_title_from_wikipedia(url):
-    pandas_obj = pandas.io.html.read_html(url)
-    # print(pandas_obj)
+    html = get_site_html(url)
 
-    index = None
-    for idx, dataframe in enumerate(pandas_obj):
-        if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
-            index = idx
-            break
-    if index:
-        not_nan_idx = (pandas_obj[index][1].isnull() != True)
-        title_list = pandas_obj[index][0][not_nan_idx].values + " " + pandas_obj[index][1][not_nan_idx].values
-        for title_name in title_list:
-            print(title_name)    
+    if html:
+        html_contents = html.read()
+        bs_obj = BeautifulSoup(html_contents, 'lxml')
+        site_title = bs_obj.body.h1.get_text()
+        pandas_obj = pandas.io.html.read_html(html_contents)
+        
+        # アニメタイトルっぽいリストのインデックスを抽出
+        title_idx_list = []
+        for idx, dataframe in enumerate(pandas_obj):
+            if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
+                title_idx_list.append(idx)
+
+        # 対象のインデックスからタイトルを抽出して表示
+        print("## {}".format(site_title))
+        for title_idx in title_idx_list:
+            not_nan_idx = (pandas_obj[title_idx][1].isnull() != True)
+            title_list = pandas_obj[title_idx][0][not_nan_idx].values + \
+                         " " + pandas_obj[title_idx][1][not_nan_idx].values
+            # タイトル出力。[0]は "話数"、 "サブタイトル" なので除外
+            for title_name in title_list[1:]:
+                print("\t{}".format(title_name))
+            print("\n")
 
 
 if __name__ == '__main__':
@@ -84,6 +93,6 @@ if __name__ == '__main__':
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
     # getTitle("http://wwww.pythonscraping.com/pages/page1.html")
-    # bsObj = getSiteHTML("http://www.pythonscraping.com/pages/warandpeace.html")
+    # bsObj = get_site_html("http://www.pythonscraping.com/pages/warandpeace.html")
     
     
