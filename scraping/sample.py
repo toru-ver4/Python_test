@@ -88,6 +88,36 @@ def get_anime_title_from_wikipedia(url):
             print("\n")
 
 
+def get_anime_page_link_from_wikipedia(url):
+    html = get_site_html(url)
+    link_array = []
+    if html:
+        html_contents = html.read()
+        bs_obj = BeautifulSoup(html_contents, 'lxml')
+        link_list = bs_obj.find("div", {"id":"mw-pages"}).find("div", {"class":"mw-content-ltr"}).findAll("a")
+
+        if link_list:
+            for link_element in link_list:
+                if 'href' in link_element.attrs:
+                    link_array.append('https://ja.wikipedia.org' + link_element.attrs['href'])
+        else:
+            print("link is not found.")
+            return None
+
+    for anime_url in link_array:
+        get_anime_title_from_wikipedia(anime_url)
+
+    next_page_list = bs_obj.find("div", {"id":"mw-pages"}).findAll("a")
+    for next_page in next_page_list:
+        if next_page.get_text() == "次のページ":
+            if 'href' in next_page.attrs:
+                print(next_page.get_text())
+                print(next_page.attrs['href'])
+                next_url = next_page.attrs['href']
+                get_anime_page_link_from_wikipedia(next_url)
+                break
+
+
 if __name__ == '__main__':
     pass
     # exec_beautifulsoup_sample()
