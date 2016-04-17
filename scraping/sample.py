@@ -140,6 +140,11 @@ def get_each_story_list_from_url_list(url_list):
         if match_obj:
             encoded_str = match_obj.group(1)
             anime_title = urllib.parse.unquote(encoded_str)
+            
+            # タイトルに特殊記号があったら置換
+            anime_title = anime_title.translate(anime_title.maketrans("?", "？"))
+            anime_title = anime_title.translate(anime_title.maketrans("!", "！"))
+
             # リストが空だったら飛ばす
             if not anime_title:
                 print("error on {}".format(url))
