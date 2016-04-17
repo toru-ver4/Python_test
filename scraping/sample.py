@@ -93,13 +93,21 @@ def get_each_story_list_from_url(url, title=""):
     # アニメタイトルっぽいリストのインデックスを抽出
     title_idx_list = []
     for idx, dataframe in enumerate(pandas_obj):
-        if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
+        # if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
+        if dataframe[0][0] == "話数" and dataframe[1][0].find("サブタイトル") >= 0:
             title_idx_list.append(idx)
+
+    # バグ解析コード ← 後で消す
+    if len(title_idx_list) == 0:
+        if site_title != "アニサン劇場":
+            print(site_title)
+            sys.exit(0)
 
     # 対象のインデックスからタイトルを抽出して表示
     print("## {}".format(site_title))
     for title_idx in title_idx_list:
         not_nan_idx = (pandas_obj[title_idx][1].isnull() != True)
+        pandas_obj[title_idx][0] = pandas_obj[title_idx][0].fillna(" ")
         title_list = pandas_obj[title_idx][0][not_nan_idx].values + \
                      " " + pandas_obj[title_idx][1][not_nan_idx].values
         # タイトル出力。[0]は "話数"、 "サブタイトル" なので除外
@@ -144,6 +152,9 @@ def get_each_story_list_from_url_list(url_list):
             # タイトルに特殊記号があったら置換
             anime_title = anime_title.translate(anime_title.maketrans("?", "？"))
             anime_title = anime_title.translate(anime_title.maketrans("!", "！"))
+            anime_title = anime_title.translate(anime_title.maketrans(":", "_"))
+            anime_title = anime_title.translate(anime_title.maketrans("/", "_"))
+            anime_title = anime_title.translate(anime_title.maketrans("*", "_"))
 
             # リストが空だったら飛ばす
             if not anime_title:
