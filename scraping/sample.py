@@ -89,12 +89,19 @@ def get_each_story_list_from_url(url, title=""):
     bs_obj = BeautifulSoup(html_contents, 'lxml')
     site_title = bs_obj.body.h1.get_text()
     pandas_obj = pandas.io.html.read_html(html_contents)
+
+    # アニメタイトルが含まれるページか判別
+    if not bs_obj.find(text="各話リスト"):
+        print("{} is not anime page".format(site_title))
+        return None
     
     # アニメタイトルっぽいリストのインデックスを抽出
     title_idx_list = []
     for idx, dataframe in enumerate(pandas_obj):
         # if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
         if dataframe[0][0] == "話数" and dataframe[1][0].find("サブタイトル") >= 0:
+            title_idx_list.append(idx)
+        elif dataframe[0][0] == "話" and dataframe[1][0].find("サブタイトル") >= 0:
             title_idx_list.append(idx)
 
     # バグ解析コード ← 後で消す
@@ -155,6 +162,7 @@ def get_each_story_list_from_url_list(url_list):
             anime_title = anime_title.translate(anime_title.maketrans(":", "_"))
             anime_title = anime_title.translate(anime_title.maketrans("/", "_"))
             anime_title = anime_title.translate(anime_title.maketrans("*", "_"))
+            anime_title = anime_title.translate(anime_title.maketrans("@", "_"))
 
             # リストが空だったら飛ばす
             if not anime_title:
