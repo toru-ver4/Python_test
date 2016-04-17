@@ -9,8 +9,13 @@ import os
 import sys
 from urllib.request import urlopen
 from urllib.error import HTTPError
+import urllib.parse
 from bs4 import BeautifulSoup
 import pandas
+import re
+
+const_html_cache_dir = './html_cache'
+wikipedia_title_pattern = re.compile(r"https://ja.wikipedia.org/wiki/(.*$)")
 
 def exec_beautifulsoup_sample():
 
@@ -61,7 +66,7 @@ def get_garupan_anime_title():
     print(pandas_obj[3][0] + " " + pandas_obj[3][0])
 
 
-def get_anime_title_from_wikipedia(url):
+def get_each_story_list_from_url(url):
     html = get_site_html(url)
 
     if html:
@@ -88,38 +93,50 @@ def get_anime_title_from_wikipedia(url):
             print("\n")
 
 
-def get_anime_page_link_from_wikipedia(url):
+def get_anime_page_link_from_wikipedia(url, link_array=[]):
     html = get_site_html(url)
-    link_array = []
     if html:
         html_contents = html.read()
         bs_obj = BeautifulSoup(html_contents, 'lxml')
-        link_list = bs_obj.find("div", {"id":"mw-pages"}).find("div", {"class":"mw-content-ltr"}).findAll("a")
+        href_list = bs_obj.find("div", {"id":"mw-pages"}).find("div", {"class":"mw-content-ltr"}).findAll("a")
 
-        if link_list:
-            for link_element in link_list:
-                if 'href' in link_element.attrs:
-                    link_array.append('https://ja.wikipedia.org' + link_element.attrs['href'])
+        if href_list:
+            for href_element in href_list:
+                if 'href' in href_element.attrs:
+                    link_array.append('https://ja.wikipedia.org' + href_element.attrs['href'])
         else:
-            print("link is not found.")
+            print("href is not found.")
             return None
 
-    for anime_url in link_array:
-        get_anime_title_from_wikipedia(anime_url)
+        next_page_list = bs_obj.find("div", {"id":"mw-pages"}).findAll("a")
+        for next_page in next_page_list:
+            if next_page.get_text() == "次のページ":
+                if 'href' in next_page.attrs:
+                    next_url = 'https://ja.wikipedia.org' + next_page.attrs['href']
+                    link_array = get_anime_page_link_from_wikipedia(next_url, link_array)
+                    break
+                
+    return link_array
 
-    next_page_list = bs_obj.find("div", {"id":"mw-pages"}).findAll("a")
-    for next_page in next_page_list:
-        if next_page.get_text() == "次のページ":
-            if 'href' in next_page.attrs:
-                print(next_page.get_text())
-                print(next_page.attrs['href'])
-                next_url = next_page.attrs['href']
-                get_anime_page_link_from_wikipedia(next_url)
-                break
 
+def get_each_story_list_from_url_list(url_list):
+    for url in url_list:
+        try:
+            match_obj = wikipedia_title_pattern.search(url)
+            if match_obj:
+                encoded_str = match_obj.group(1)
+                print(urllib.parse.unquote(encoded_str))
+        except:
+            print("fatal error is occured!") 
+
+    
 
 if __name__ == '__main__':
-    pass
+
+    url_2015 = "https://ja.wikipedia.org/wiki/Category:2015%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
+    anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
+    get_each_story_list_from_url_list(anime_url_list)
+
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
     # getTitle("http://wwww.pythonscraping.com/pages/page1.html")
