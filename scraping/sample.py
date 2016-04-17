@@ -66,31 +66,46 @@ def get_garupan_anime_title():
     print(pandas_obj[3][0] + " " + pandas_obj[3][0])
 
 
-def get_each_story_list_from_url(url):
-    html = get_site_html(url)
+def get_each_story_list_from_url(url, title=""):
 
-    if html:
-        html_contents = html.read()
-        bs_obj = BeautifulSoup(html_contents, 'lxml')
-        site_title = bs_obj.body.h1.get_text()
-        pandas_obj = pandas.io.html.read_html(html_contents)
-        
-        # アニメタイトルっぽいリストのインデックスを抽出
-        title_idx_list = []
-        for idx, dataframe in enumerate(pandas_obj):
-            if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
-                title_idx_list.append(idx)
+    # html の cache を確認
+    cache_file_name = os.path.join(const_html_cache_dir, title)
+    if os.path.isfile(cache_file_name):
+        with open(cache_file_name, 'rb') as f:
+            print("read from cache")
+            html_contents = f.read()
+    else:
+        html = get_site_html(url)
+        if html:
+            html_contents = html.read()
+            if not os.path.isdir(const_html_cache_dir):
+                os.mkdir(const_html_cache_dir)
+            with open(cache_file_name, 'wb') as f:
+                f.write(html_contents)
+        else:
+            print("anime each story list is not found ad {}".format(title))
+            return None
 
-        # 対象のインデックスからタイトルを抽出して表示
-        print("## {}".format(site_title))
-        for title_idx in title_idx_list:
-            not_nan_idx = (pandas_obj[title_idx][1].isnull() != True)
-            title_list = pandas_obj[title_idx][0][not_nan_idx].values + \
-                         " " + pandas_obj[title_idx][1][not_nan_idx].values
-            # タイトル出力。[0]は "話数"、 "サブタイトル" なので除外
-            for title_name in title_list[1:]:
-                print("\t{}".format(title_name))
-            print("\n")
+    bs_obj = BeautifulSoup(html_contents, 'lxml')
+    site_title = bs_obj.body.h1.get_text()
+    pandas_obj = pandas.io.html.read_html(html_contents)
+    
+    # アニメタイトルっぽいリストのインデックスを抽出
+    title_idx_list = []
+    for idx, dataframe in enumerate(pandas_obj):
+        if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
+            title_idx_list.append(idx)
+
+    # 対象のインデックスからタイトルを抽出して表示
+    print("## {}".format(site_title))
+    for title_idx in title_idx_list:
+        not_nan_idx = (pandas_obj[title_idx][1].isnull() != True)
+        title_list = pandas_obj[title_idx][0][not_nan_idx].values + \
+                     " " + pandas_obj[title_idx][1][not_nan_idx].values
+        # タイトル出力。[0]は "話数"、 "サブタイトル" なので除外
+        for title_name in title_list[1:]:
+            print("\t{}".format(title_name))
+        print("\n")
 
 
 def get_anime_page_link_from_wikipedia(url, link_array=[]):
@@ -121,14 +136,16 @@ def get_anime_page_link_from_wikipedia(url, link_array=[]):
 
 def get_each_story_list_from_url_list(url_list):
     for url in url_list:
-        try:
-            match_obj = wikipedia_title_pattern.search(url)
-            if match_obj:
-                encoded_str = match_obj.group(1)
-                print(urllib.parse.unquote(encoded_str))
-        except:
-            print("fatal error is occured!") 
+        match_obj = wikipedia_title_pattern.search(url)
+        if match_obj:
+            encoded_str = match_obj.group(1)
+            anime_title = urllib.parse.unquote(encoded_str)
+            # リストが空だったら飛ばす
+            if not anime_title:
+                print("error on {}".format(url))
+                continue
 
+            get_each_story_list_from_url(url, title=anime_title)
     
 
 if __name__ == '__main__':
