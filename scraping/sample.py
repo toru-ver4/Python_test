@@ -16,6 +16,7 @@ import re
 
 const_html_cache_dir = './html_cache'
 wikipedia_title_pattern = re.compile(r"https://ja.wikipedia.org/wiki/(.*$)")
+err_title_list = []
 
 def exec_beautifulsoup_sample():
 
@@ -94,29 +95,43 @@ def get_each_story_list_from_url(url, title=""):
     if not bs_obj.find(text="各話リスト"):
         print("{} is not anime page".format(site_title))
         return None
-    
+
+    print(pandas_obj)
+
     # アニメタイトルっぽいリストのインデックスを抽出
     title_idx_list = []
     for idx, dataframe in enumerate(pandas_obj):
-        # if dataframe[0][0] == "話数" and dataframe[1][0] == "サブタイトル":
-        if dataframe[0][0] == "話数" and dataframe[1][0].find("サブタイトル") >= 0:
-            title_idx_list.append(idx)
-        elif dataframe[0][0] == "話" and dataframe[1][0].find("サブタイトル") >= 0:
-            title_idx_list.append(idx)
+        for inter_idx in range(dataframe.shape[1] - 1):
+            if dataframe[inter_idx][0] == "話数" and dataframe[inter_idx+1][0].find("サブタイトル") >= 0:
+                story_idx = inter_idx
+                story_title_index = inter_idx + 1
+                title_idx_list.append(idx)
+                break
+            elif dataframe[inter_idx][0] == "話" and dataframe[inter_idx+1][0].find("サブタイトル") >= 0:
+                story_idx = inter_idx
+                story_title_index = inter_idx + 1
+                title_idx_list.append(idx)
+                break
+
+            # if dataframe[0][0] == "話数" and dataframe[1][0].find("サブタイトル") >= 0:
+            #     title_idx_list.append(idx)
+            # elif dataframe[0][0] == "話" and dataframe[1][0].find("サブタイトル") >= 0:
+            #     title_idx_list.append(idx)
 
     # バグ解析コード ← 後で消す
     if len(title_idx_list) == 0:
-        if site_title != "アニサン劇場":
+        err_title_list.append(site_title)
+        if site_title != "アニサン劇場" and site_title != "カード・バトルZERO":
             print(site_title)
             sys.exit(0)
 
     # 対象のインデックスからタイトルを抽出して表示
     print("## {}".format(site_title))
     for title_idx in title_idx_list:
-        not_nan_idx = (pandas_obj[title_idx][1].isnull() != True)
-        pandas_obj[title_idx][0] = pandas_obj[title_idx][0].fillna(" ")
-        title_list = pandas_obj[title_idx][0][not_nan_idx].values + \
-                     " " + pandas_obj[title_idx][1][not_nan_idx].values
+        not_nan_idx = (pandas_obj[title_idx][story_title_index].isnull() != True)
+        pandas_obj[title_idx][0] = pandas_obj[title_idx][story_idx].fillna(" ")
+        title_list = pandas_obj[title_idx][story_idx][not_nan_idx].values + \
+                     " " + pandas_obj[title_idx][story_title_index][not_nan_idx].values
         # タイトル出力。[0]は "話数"、 "サブタイトル" なので除外
         for title_name in title_list[1:]:
             print("\t{}".format(title_name))
@@ -175,9 +190,12 @@ def get_each_story_list_from_url_list(url_list):
 if __name__ == '__main__':
 
     url_2015 = "https://ja.wikipedia.org/wiki/Category:2015%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
-    anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
-    get_each_story_list_from_url_list(anime_url_list)
+    # anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
+    # get_each_story_list_from_url_list(anime_url_list)
 
+    url = "https://ja.wikipedia.org/wiki/%E3%82%AD%E3%83%A5%E3%83%BC%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B9%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%BC_%E5%B8%B0%E3%81%A3%E3%81%A6%E3%81%8D%E3%81%9F%E3%82%B3%E3%83%B3%E3%83%9C%E3%82%A4%E3%81%AE%E8%AC%8E"
+    get_each_story_list_from_url(url, title="unchi2")
+    
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
     # getTitle("http://wwww.pythonscraping.com/pages/page1.html")
