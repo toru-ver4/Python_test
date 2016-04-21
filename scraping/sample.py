@@ -16,6 +16,14 @@ import re
 
 const_html_cache_dir = './html_cache'
 const_fillna_str = " "
+const_exclusion_title_set = frozenset(["アニサン劇場", 
+                                       "カード・バトルZERO",
+                                       "新あたしンち",
+                                       "スタミュ",
+                                       "DIABOLIK_LOVERS",
+                                       "DIABOLIK_LOVERS_MORE,BLOOD",
+                                       "北斗の拳_イチゴ味"
+])
 wikipedia_title_pattern = re.compile(r"https://ja.wikipedia.org/wiki/(.*$)")
 err_title_list = []
 
@@ -97,6 +105,7 @@ def get_each_story_list_from_url(url, title=""):
         print("{} is not anime page".format(site_title))
         return None
 
+    # デバッグ出力。困ったら使おう
     # print(pandas_obj)
 
     # アニメタイトルっぽいリストのインデックスを抽出
@@ -117,14 +126,12 @@ def get_each_story_list_from_url(url, title=""):
     # バグ解析コード ← 後で消す
     if len(title_idx_list) == 0:
         err_title_list.append(site_title)
-        if site_title != "アニサン劇場" and site_title != "カード・バトルZERO":
-            print(site_title)
-            sys.exit(0)
+        print(site_title)
+        sys.exit(0)
 
     # 対象のインデックスからタイトルを抽出して表示
     print("## {}".format(site_title))
     for title_idx in title_idx_list:
-        # not_nan_idx = (pandas_obj[title_idx][story_title_index].isnull() != True)
         not_nan_idx = (pandas_obj[title_idx][story_title_index] != const_fillna_str)
         not_nan_idx_2 = ~(pandas_obj[title_idx][story_title_index].str.contains("タイトル"))
         not_nan_idx = not_nan_idx & not_nan_idx_2
@@ -181,6 +188,11 @@ def get_each_story_list_from_url_list(url_list):
                 print("error on {}".format(url))
                 continue
 
+            # NGリストに該当するアニメは飛ばす
+            if anime_title in const_exclusion_title_set:
+                print("{} is included the exclusion list.".format(anime_title))
+                continue
+
             get_each_story_list_from_url(url, title=anime_title)
     
 
@@ -190,8 +202,8 @@ if __name__ == '__main__':
     anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
     get_each_story_list_from_url_list(anime_url_list)
 
-    # url = "https://ja.wikipedia.org/wiki/%E3%82%AD%E3%83%A5%E3%83%BC%E3%83%88%E3%83%A9%E3%83%B3%E3%82%B9%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%BC_%E5%B8%B0%E3%81%A3%E3%81%A6%E3%81%8D%E3%81%9F%E3%82%B3%E3%83%B3%E3%83%9C%E3%82%A4%E3%81%AE%E8%AC%8E"
-    # get_each_story_list_from_url(url, title="unchi2")
+    # url = "https://ja.wikipedia.org/wiki/%E3%81%82%E3%81%9F%E3%81%97%E3%83%B3%E3%81%A1"
+    # get_each_story_list_from_url(url, title="unchi3")
     
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
