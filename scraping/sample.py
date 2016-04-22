@@ -109,20 +109,39 @@ def get_each_story_list_from_url(url, title=""):
     # print(pandas_obj)
 
     # アニメタイトルっぽいリストのインデックスを抽出
+    story_idx_list = []
+    story_title_index_list = []
     title_idx_list = []
     for idx, dataframe in enumerate(pandas_obj):
-        for inter_idx in range(dataframe.shape[1] - 1):
+        story_idx = None
+        story_title_index = None
+
+        # 「話数」の列番号を検索
+        for inter_idx in range(dataframe.shape[1]):
             dataframe[inter_idx] = dataframe[inter_idx].fillna(const_fillna_str)
-            dataframe[inter_idx + 1] = dataframe[inter_idx + 1].fillna(const_fillna_str)
             wa_check = ((dataframe[inter_idx].str.contains("話")).sum() > 0)
             wa_check_2 = ((dataframe[inter_idx].str.contains("#")).sum() > 0)
-            sub_title_check = ((dataframe[inter_idx + 1].str.contains("タイトル")).sum() > 0)
 
-            if (wa_check or wa_check_2) and sub_title_check:
+            if (wa_check or wa_check_2):
                 story_idx = inter_idx
-                story_title_index = inter_idx + 1
-                title_idx_list.append(idx)
+                break
 
+        # 「サブタイトル」の列番号を検索
+        for inter_idx in range(dataframe.shape[1]):
+            dataframe[inter_idx] = dataframe[inter_idx].fillna(const_fillna_str)
+            sub_title_check = ((dataframe[inter_idx].str.contains("タイトル")).sum() > 0)
+            if sub_title_check:
+                story_title_index = inter_idx
+                break
+
+        # 「話数」、「サブタイトル」の両方がヒットしたか確認
+        if (story_idx is not None) and (story_title_index is not  None):
+            # wa_check と sub_title_check の双方が有効なら足す
+            title_idx_list.append(idx)
+            story_idx_list.append(story_idx)
+            story_title_index_list.append(story_title_index)
+                
+            
     # バグ解析コード ← 後で消す
     if len(title_idx_list) == 0:
         err_title_list.append(site_title)
@@ -131,10 +150,12 @@ def get_each_story_list_from_url(url, title=""):
 
     # 対象のインデックスからタイトルを抽出して表示
     print("## {}".format(site_title))
-    for title_idx in title_idx_list:
+    for title_idx, story_idx, story_title_index in zip(title_idx_list, story_idx_list, story_title_index_list):
+        # Nan だった行は集計対象から外す。それ用のIndex計算
         not_nan_idx = (pandas_obj[title_idx][story_title_index] != const_fillna_str)
         not_nan_idx_2 = ~(pandas_obj[title_idx][story_title_index].str.contains("タイトル"))
         not_nan_idx = not_nan_idx & not_nan_idx_2
+
         title_list = pandas_obj[title_idx][story_idx][not_nan_idx].values + \
                      " " + pandas_obj[title_idx][story_title_index][not_nan_idx].values
         for title_name in title_list:
@@ -202,8 +223,8 @@ if __name__ == '__main__':
     anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
     get_each_story_list_from_url_list(anime_url_list)
 
-    # url = "https://ja.wikipedia.org/wiki/%E3%81%82%E3%81%9F%E3%81%97%E3%83%B3%E3%81%A1"
-    # get_each_story_list_from_url(url, title="unchi3")
+    # url = "https://ja.wikipedia.org/wiki/%E5%A4%9C%E3%83%8E%E3%83%A4%E3%83%83%E3%82%BF%E3%83%BC%E3%83%9E%E3%83%B3"
+    # get_each_story_list_from_url(url, title="unchi4")
     
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
