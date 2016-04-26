@@ -13,6 +13,10 @@ import urllib.parse
 from bs4 import BeautifulSoup
 import pandas
 import re
+import io
+
+# コマンドプロンプトでリダイレクトする際に、UnicodeEncodeError が出る問題への対処
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 const_html_cache_dir = './html_cache'
 const_fillna_str = " "
@@ -154,6 +158,7 @@ def get_each_story_list_from_url(url, title=""):
         sys.exit(0)
 
     # 対象のインデックスからタイトルを抽出して表示
+    
     print("## {}".format(site_title))
     for title_idx, story_idx, story_title_index in zip(title_idx_list, story_idx_list, story_title_index_list):
         # Nan だった行は集計対象から外す。それ用のIndex計算
@@ -226,8 +231,8 @@ if __name__ == '__main__':
 
     url_2015 = "https://ja.wikipedia.org/wiki/Category:2015%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
     url_2014 = "https://ja.wikipedia.org/wiki/Category:2014%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
-    # anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
-    anime_url_list = get_anime_page_link_from_wikipedia(url_2014)
+    anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
+    # anime_url_list = get_anime_page_link_from_wikipedia(url_2014)
     get_each_story_list_from_url_list(anime_url_list)
 
     # url = "https://ja.wikipedia.org/wiki/%E5%A4%9C%E3%83%8E%E3%83%A4%E3%83%83%E3%82%BF%E3%83%BC%E3%83%9E%E3%83%B3"
