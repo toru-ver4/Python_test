@@ -34,8 +34,8 @@ const_exclusion_title_set = frozenset(["アニサン劇場",
 ])
 wikipedia_title_pattern = re.compile(r"https://ja.wikipedia.org/wiki/(.*$)")
 hira_gana_pattern=re.compile(r"[ぁ-ん]")
-kata_kaana_pattern=re.compile(r"[ァ-ン]")
-kanji_pattern=re.compile(r"[一-龥]")
+kata_kaana_pattern=re.compile(r"[ァ-ヴ]")
+kanji_pattern=re.compile(r"[一-龠]")
 err_title_list = []
 
 def exec_beautifulsoup_sample():
