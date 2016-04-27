@@ -148,10 +148,12 @@ def get_each_story_list_from_url(url, title=""):
 
         # 「話数」、「サブタイトル」の両方がヒットしたか確認
         if (story_idx is not None) and (story_title_index is not  None):
-            # wa_check と sub_title_check の双方が有効なら足す
-            title_idx_list.append(idx)
-            story_idx_list.append(story_idx)
-            story_title_index_list.append(story_title_index)
+            # 2つのIndexが同じ場合はNGとみなす(うしおととらで発見したバグ)
+            if story_idx != story_title_index:
+                # wa_check と sub_title_check の双方が有効なら足す
+                title_idx_list.append(idx)
+                story_idx_list.append(story_idx)
+                story_title_index_list.append(story_title_index)
                 
             
     # バグ解析コード ← 後で消す
@@ -239,10 +241,10 @@ if __name__ == '__main__':
     url_2014 = "https://ja.wikipedia.org/wiki/Category:2014%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
     anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
     # anime_url_list = get_anime_page_link_from_wikipedia(url_2014)
-    # get_each_story_list_from_url_list(anime_url_list)
+    get_each_story_list_from_url_list(anime_url_list)
 
-    url = "https://ja.wikipedia.org/wiki/%E5%A4%9C%E3%83%8E%E3%83%A4%E3%83%83%E3%82%BF%E3%83%BC%E3%83%9E%E3%83%B3"
-    get_each_story_list_from_url(url, title="unchi4")
+    # url = "https://ja.wikipedia.org/wiki/%E3%81%86%E3%81%97%E3%81%8A%E3%81%A8%E3%81%A8%E3%82%89"
+    # get_each_story_list_from_url(url, title="unchi5")
     
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
