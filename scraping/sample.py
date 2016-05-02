@@ -32,6 +32,7 @@ const_exclusion_title_set = frozenset(["アニサン劇場",
                                        "ナノ・インベーダーズ",
                                        "闇芝居"
 ])
+global_title_set = set()
 wikipedia_title_pattern = re.compile(r"https://ja.wikipedia.org/wiki/(.*$)")
 hira_gana_pattern=re.compile(r"[ぁ-ん]")
 kata_kaana_pattern=re.compile(r"[ァ-ヴ]")
@@ -175,9 +176,9 @@ def get_each_story_list_from_url(url, title=""):
         for title_name in title_list:
             print("\t{}, {}".format(title_name, len(title_name)))
             # 以下は、漢字・平仮名・カタカナの文字数抽出の正規表現。後で消します。
-            print("\t, {}".format(kanji_pattern.findall(title_name)))
-            print("\t, {}".format(hira_gana_pattern.findall(title_name)))
-            print("\t, {}".format(kata_kaana_pattern.findall(title_name)))
+            # print("\t, {}".format(kanji_pattern.findall(title_name)))
+            # print("\t, {}".format(hira_gana_pattern.findall(title_name)))
+            # print("\t, {}".format(kata_kaana_pattern.findall(title_name)))
         print("\n")
 
 
