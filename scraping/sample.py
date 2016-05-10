@@ -32,6 +32,8 @@ const_exclusion_title_set = frozenset(["アニサン劇場",
                                        "ナノ・インベーダーズ",
                                        "闇芝居"
 ])
+const_story_pattern_list = ["話", "#"]
+const_story_title_pattern_list = ["タイトル", "レッスンテーマ"]
 global_title_set = set()
 wikipedia_title_pattern = re.compile(r"https://ja.wikipedia.org/wiki/(.*$)")
 hira_gana_pattern=re.compile(r"[ぁ-ん]")
@@ -131,24 +133,26 @@ def get_each_story_list_from_url(url, title=""):
         # 「話数」の列番号を検索
         for inter_idx in range(dataframe.shape[1]):
             dataframe[inter_idx] = dataframe[inter_idx].fillna(const_fillna_str)
-            wa_check = ((dataframe[inter_idx].str.contains("話")).sum() > 0)
-            wa_check_2 = ((dataframe[inter_idx].str.contains("#")).sum() > 0)
+            wa_check = False
+            for story_pattern in const_story_pattern_list:
+                wa_check = wa_check | ((dataframe[inter_idx].str.contains(story_pattern)).sum() > 0)
 
-            if (wa_check or wa_check_2):
+            if wa_check:
                 story_idx = inter_idx
                 break
 
         # 「サブタイトル」の列番号を検索
         for inter_idx in range(dataframe.shape[1]):
             dataframe[inter_idx] = dataframe[inter_idx].fillna(const_fillna_str)
-            sub_title_check = ((dataframe[inter_idx].str.contains("タイトル")).sum() > 0)
-            sub_title_check_2 = ((dataframe[inter_idx].str.contains("レッスンテーマ")).sum() > 0)
-            if sub_title_check or sub_title_check_2:
+            sub_title_check = False
+            for story_title_pattern in const_story_title_pattern_list:
+                sub_title_check = sub_title_check | ((dataframe[inter_idx].str.contains(story_title_pattern)).sum() > 0)
+            if sub_title_check:
                 story_title_index = inter_idx
                 break
 
         # 「話数」、「サブタイトル」の両方がヒットしたか確認
-        if (story_idx is not None) and (story_title_index is not  None):
+        if (story_idx is not None) and (story_title_index is not None):
             # 2つのIndexが同じ場合はNGとみなす(うしおととらで発見したバグ)
             if story_idx != story_title_index:
                 # wa_check と sub_title_check の双方が有効なら足す
@@ -241,8 +245,9 @@ if __name__ == '__main__':
     url_2015 = "https://ja.wikipedia.org/wiki/Category:2015%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
     url_2014 = "https://ja.wikipedia.org/wiki/Category:2014%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
     anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
-    # anime_url_list = get_anime_page_link_from_wikipedia(url_2014)
     get_each_story_list_from_url_list(anime_url_list)
+    # anime_url_list = get_anime_page_link_from_wikipedia(url_2014)
+    # get_each_story_list_from_url_list(anime_url_list)
 
     # url = "https://ja.wikipedia.org/wiki/%E3%81%86%E3%81%97%E3%81%8A%E3%81%A8%E3%81%A8%E3%82%89"
     # get_each_story_list_from_url(url, title="unchi5")
