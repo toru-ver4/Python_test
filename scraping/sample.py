@@ -120,7 +120,7 @@ def get_each_story_list_from_url(url, title=""):
         return None
 
     # デバッグ出力。困ったら使おう
-    # print(pandas_obj)
+    print(pandas_obj)
 
     # アニメタイトルっぽいリストのインデックスを抽出
     story_idx_list = []
@@ -186,6 +186,7 @@ def get_each_story_list_from_url(url, title=""):
         print("\n")
 
 
+
 def get_anime_page_link_from_wikipedia(url, link_array=[]):
     html = get_site_html(url)
     if html:
@@ -244,13 +245,13 @@ if __name__ == '__main__':
 
     url_2015 = "https://ja.wikipedia.org/wiki/Category:2015%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
     url_2014 = "https://ja.wikipedia.org/wiki/Category:2014%E5%B9%B4%E3%81%AE%E3%83%86%E3%83%AC%E3%83%93%E3%82%A2%E3%83%8B%E3%83%A1"
-    anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
-    get_each_story_list_from_url_list(anime_url_list)
+    # anime_url_list = get_anime_page_link_from_wikipedia(url_2015)
+    # get_each_story_list_from_url_list(anime_url_list)
     # anime_url_list = get_anime_page_link_from_wikipedia(url_2014)
     # get_each_story_list_from_url_list(anime_url_list)
 
-    # url = "https://ja.wikipedia.org/wiki/%E3%81%86%E3%81%97%E3%81%8A%E3%81%A8%E3%81%A8%E3%82%89"
-    # get_each_story_list_from_url(url, title="unchi5")
+    url = "https://ja.wikipedia.org/wiki/%E7%A5%9E%E3%80%85%E3%81%AE%E6%82%AA%E6%88%AF"
+    get_each_story_list_from_url(url, title="unchi7")
     
     # exec_beautifulsoup_sample()
     # getTitle("http://www.pythonscraping.com/pages/page1.html")
