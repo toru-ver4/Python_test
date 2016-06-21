@@ -23,6 +23,10 @@ def main_func():
     driver.get(const_twitter_media_url)
     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
     time.sleep(3)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
     # soup = BeautifulSoup(r.text, "lxml")
     soup = BeautifulSoup(driver.page_source, "lxml")
     for idx, img_tag in enumerate(soup.findAll("img", {'src':const_img_pattern})):
@@ -37,13 +41,15 @@ def main_func():
                 for chunk in r.iter_content(1024):
                     f.write(chunk)
 
-            # 画像データをロード
-            img = mpimg.imread(file_full_name)
+            print(file_full_name)
 
-            # matplotlib を使って画像を表示
-            fig = plt.figure(figsize=(7,7)) # 描画用の領域を用意
-            ax1 = fig.add_subplot(1,1,1)    # 引数はそれぞれ 縦数、横数、index 
-            ax1.imshow(img)
+            # # 画像データをロード
+            # img = mpimg.imread(file_full_name)
+
+            # # matplotlib を使って画像を表示
+            # fig = plt.figure(figsize=(7,7)) # 描画用の領域を用意
+            # ax1 = fig.add_subplot(1,1,1)    # 引数はそれぞれ 縦数、横数、index 
+            # ax1.imshow(img)
 
     # remove the temp dir.
     # shutil.rmtree(temp_dir)
