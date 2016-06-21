@@ -15,9 +15,9 @@ from kivy.clock import Clock
 
 class PongPaddle(Widget):
     score = NumericProperty(0)
+        if self.collide_widget(ball):
 
     def bounce_ball(self, ball):
-        if self.collide_widget(ball):
             vx, vy = ball.velocity
             offset = (ball.center_y - self.center_y) / (self.height / 2)
             bounced = Vector(-1 * vx, vy)
@@ -52,7 +52,7 @@ class PongGame(Widget):
 
         #bounce ball off bottom or top
         if (self.ball.y < self.y) or (self.ball.top > self.top):
-            self.ball.velocity_y *= -1
+            self.b1all.velocity_y *= -1
 
         #went of to a side to score point?
         if self.ball.x < self.x:
