@@ -1,41 +1,50 @@
 <MyWidget>:
-    BoxLayout:
+    GridLayout:
         size: root.size
-        orientation: 'vertical'
+        cols:1
         Label:
-            size_hint: 1, 0.08
+            size_hint_y: None
+            height: root.height * 0.1
             text: 'tiwter illust viewer'
         ScrollView:
             size_hint: 1, None
-            BoxLayout:
+            size: root.width, root.height * 0.8
+            do_scroll_x: False
+            do_scroll_y: True
+            GridLayout:
+                cols:1
                 size_hint: 1, None
-                orientation: 'vertical'
                 Button:
-                    size: (200, 800)
+                    size_hint_y: None
+                    height: root.height * 0.2
                     text: 'aaa'
                 Button:
-                    size: (200, 800) 
+                    size_hint_y: None
+                    height: root.height * 0.2
                     text: 'bbb'
                 Button:
-                    size: (200, 800) 
-                    text: 'bbb'
+                    size_hint_y: None
+                    height: root.height * 0.2
+                    text: 'ccc'
                 Button:
-                    size: (200, 800) 
-                    text: 'bbb'
+                    size_hint_y: None
+                    height: root.height * 0.2
+                    text: 'ddd'
                 Button:
-                    size: (200, 800) 
-                    text: 'bbb'
+                    size_hint_y: None
+                    height: root.height * 0.2
+                    text: 'eee'
                 Button:
-                    size: (200, 800) 
-                    text: 'bbb'
+                    size_hint_y: None
+                    height: root.height * 0.2
+                    text: 'fff'
                 Button:
-                    size: (200, 800) 
-                    text: 'bbb'
-                Button:
-                    size: (200, 800) 
-                    text: 'bbb'
+                    size_hint_y: None
+                    height: root.height * 0.2
+                    text: 'ggg'
         BoxLayout:
-            size_hint: 1, 0.08
+            size_hint_y: None
+            height: root.height * 0.1
             orientation: 'horizontal'
             padding: 0
             Button:
