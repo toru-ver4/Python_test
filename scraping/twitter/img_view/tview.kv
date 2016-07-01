@@ -1,5 +1,6 @@
 <MyWidget>:
     GridLayout:
+        id: root_layout
         size: root.size
         cols:1
         Label:
@@ -7,42 +8,16 @@
             height: root.height * 0.1
             text: 'tiwter illust viewer'
         ScrollView:
+            id: scroll
             size_hint: 1, None
             size: root.width, root.height * 0.8
             do_scroll_x: False
             do_scroll_y: True
             GridLayout:
-                cols:1
+                id: illust_area
+                cols:2
                 size_hint: 1, None
                 height: self.minimum_height
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'aaa'
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'bbb'
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'ccc'
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'ddd'
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'eee'
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'fff'
-                Button:
-                    size_hint_y: None
-                    height: root.height * 0.2
-                    text: 'ggg'
         BoxLayout:
             size_hint_y: None
             height: root.height * 0.1
@@ -50,9 +25,10 @@
             padding: 0
             Button:
                 text: 'get'
+                on_release: root.add_picture()
             Button:
                 text: 'clear'
-                on_release: app.clear_picture()
+                on_release: root.clear_picture()
                 
             Button:
                 text: 'close'
