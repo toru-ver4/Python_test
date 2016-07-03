@@ -18,7 +18,8 @@ class MyWidget(Widget):
                 img_full_path_list.append(os.path.join(img_dir, file_name))
 
         for file_name in img_full_path_list:
-            im = Image(source=file_name, size_hint=(1, None))
+            im = Image(source=file_name, size_hint_y=None, height=1024)
+            # im = Image(source=file_name, size=(400, 400))
             self.ids.illust_area.add_widget(im)
 
     def clear_picture(self):
@@ -38,3 +39,4 @@ class TwitterViewApp(App):
 
 if __name__ == '__main__':
     TwitterViewApp().run()
+
