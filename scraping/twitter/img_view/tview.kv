@@ -5,12 +5,12 @@
         cols:1
         Label:
             size_hint_y: None
-            height: root.height * 0.1
+            height: root.height * 0.075
             text: 'tiwter illust viewer'
         ScrollView:
             id: scroll
             size_hint: 1, None
-            size: root.width, root.height * 0.8
+            size: root.width, root.height * 0.85
             do_scroll_x: False
             do_scroll_y: True
             GridLayout:
@@ -20,7 +20,7 @@
                 height: self.minimum_height
         BoxLayout:
             size_hint_y: None
-            height: root.height * 0.1
+            height: root.height * 0.075
             orientation: 'horizontal'
             padding: 0
             Button:

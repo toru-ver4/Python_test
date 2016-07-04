@@ -2,7 +2,6 @@ import os
 import fnmatch
 from kivy.app import App
 from kivy.uix.widget import Widget
-from kivy.uix.button import Button
 from kivy.lang import Builder
 from kivy.uix.image import Image
 
@@ -18,7 +17,7 @@ class MyWidget(Widget):
                 img_full_path_list.append(os.path.join(img_dir, file_name))
 
         for file_name in img_full_path_list:
-            im = Image(source=file_name, size_hint_y=None, height=1024)
+            im = Image(source=file_name, size_hint_y=None, height=300)
             # im = Image(source=file_name, size=(400, 400))
             self.ids.illust_area.add_widget(im)
 
