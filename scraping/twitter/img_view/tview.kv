@@ -4,9 +4,17 @@
         size: root.size
         cols:1
         Label:
+            color: 0, 0, 0, 1
+            font_size: self.height / 3
             size_hint_y: None
             height: root.height * 0.075
             text: 'tiwter illust viewer'
+            canvas.before:
+                Color:
+                    rgb: 0.5, 0.5, 0.5
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
         ScrollView:
             id: scroll
             size_hint: 1, None
@@ -18,18 +26,27 @@
                 cols:2
                 size_hint: 1, None
                 height: self.minimum_height
+                canvas:
+                    Color:
+                        rgb: 0.9, 0.9, 0.9
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
         BoxLayout:
             size_hint_y: None
             height: root.height * 0.075
             orientation: 'horizontal'
             padding: 0
-            Button:
+            MyCtrlButton:
                 text: 'get'
                 on_release: root.add_picture()
-            Button:
+            MyCtrlButton:
                 text: 'clear'
                 on_release: root.clear_picture()
-                
-            Button:
+            MyCtrlButton:
                 text: 'close'
                 on_release: app.close_callback()
+
+
+<MyCtrlButton@Button>
+    font_size: self.height / 3
