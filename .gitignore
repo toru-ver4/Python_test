@@ -10,3 +10,4 @@ scraping/ghostdriver.log
 scraping/twitter/__pycache__/get_twitter_illust.cpython-34.pyc
 scraping/twitter/__pycache__/get_twitter_illust.cpython-35.pyc
 scraping/twitter/ghostdriver.log
+scraping/twitter/img_view/img_cache/
