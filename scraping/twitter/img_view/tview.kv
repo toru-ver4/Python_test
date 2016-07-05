@@ -3,18 +3,10 @@
         id: root_layout
         size: root.size
         cols:1
-        Label:
-            color: 0, 0, 0, 1
-            font_size: self.height / 3
-            size_hint_y: None
-            height: root.height * 0.075
-            text: 'tiwter illust viewer'
-            canvas.before:
-                Color:
-                    rgb: 0.5, 0.5, 0.5
-                Rectangle:
-                    pos: self.pos
-                    size: self.size
+        TextInput:
+            id: id_text_box
+            font_size: self.height /2
+            text: 'please type twitter id'
         ScrollView:
             id: scroll
             size_hint: 1, None
@@ -39,7 +31,7 @@
             padding: 0
             MyCtrlButton:
                 text: 'get'
-                on_release: root.add_picture()
+                on_release: root.get_tiwtter_illust()
             MyCtrlButton:
                 text: 'clear'
                 on_release: root.clear_picture()
