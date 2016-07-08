@@ -18,7 +18,7 @@
                 cols:2
                 size_hint: 1, None
                 height: self.minimum_height
-                canvas:
+                canvas.before:
                     Color:
                         rgb: 0.9, 0.9, 0.9
                     Rectangle:
@@ -31,7 +31,7 @@
             padding: 0
             MyCtrlButton:
                 text: 'get'
-                on_release: root.get_tiwtter_illust()
+                on_release: root.paste_twitter_illust()
             MyCtrlButton:
                 text: 'clear'
                 on_release: root.clear_picture()

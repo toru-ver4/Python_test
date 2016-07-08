@@ -9,6 +9,8 @@ import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
+from threading import Thread
+from kivy.clock import mainthread
 
 Builder.load_file('./tview.kv')
 
@@ -30,7 +32,11 @@ class MyWidget(Widget):
     def clear_picture(self):
         self.ids.illust_area.clear_widgets()
 
-    def get_tiwtter_illust(self):
+    def paste_twitter_illust(self):
+        aaa = Thread(target=self.get_and_set_tiwtter_illust, name="aaa")
+        aaa.start()
+
+    def get_and_set_tiwtter_illust(self):
         twitter_id = self.ids.id_text_box.text
         url = "https://twitter.com/" + twitter_id + "/media"
         print(url)
@@ -60,10 +66,14 @@ class MyWidget(Widget):
                         f.write(chunk)
                 # 少々ダサいが、ファイルを再オープンして画像を表示
                 # ----------------------------------------
+                print(file_full_name)
                 im = Image(source=file_full_name, size_hint_y=None, height=300)
-                self.ids.illust_area.add_widget(im)
-
+                self.update(im)
         driver.close()
+
+    @mainthread
+    def update(self, im):
+        self.ids.illust_area.add_widget(im)
 
 
 class TwitterViewApp(App):
