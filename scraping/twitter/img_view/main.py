@@ -1,4 +1,5 @@
 import os
+import time
 import fnmatch
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -67,12 +68,13 @@ class MyWidget(Widget):
                 # 少々ダサいが、ファイルを再オープンして画像を表示
                 # ----------------------------------------
                 print(file_full_name)
-                im = Image(source=file_full_name, size_hint_y=None, height=300)
-                self.update(im)
+                self.update(file_full_name)
+                time.sleep(1)
         driver.close()
 
     @mainthread
-    def update(self, im):
+    def update(self, file_full_name):
+        im = Image(source=file_full_name, size_hint_y=None, height=300)
         self.ids.illust_area.add_widget(im)
 
 
