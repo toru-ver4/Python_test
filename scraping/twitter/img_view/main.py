@@ -12,13 +12,17 @@ from selenium import webdriver
 from datetime import datetime
 from threading import Thread
 from kivy.clock import mainthread
+from kivy.uix.screenmanager import ScreenManager, Screen
 
 Builder.load_file('./tview.kv')
 
 const_img_pattern = re.compile(".*\/media\/.*jpg")
 
 
-class MyWidget(Widget):
+class MyWidget(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     def add_picture(self):
         img_dir = './img_cache'
         img_full_path_list = []
@@ -78,11 +82,20 @@ class MyWidget(Widget):
         self.ids.illust_area.add_widget(im)
 
 
+class ImgViewScreen(Screen):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
 class TwitterViewApp(App):
 
     def build(self):
-        my_widget = MyWidget()
-        return my_widget
+        sm = ScreenManager()
+        main_screen = MyWidget(name="main")
+        img_view_screen = ImgViewScreen(name="img_view")
+        sm.add_widget(main_screen)
+        sm.add_widget(img_view_screen)
+        return sm
 
     def close_callback(self):
         print("this application to be close...")

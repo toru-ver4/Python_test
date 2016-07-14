@@ -38,7 +38,19 @@
             MyCtrlButton:
                 text: 'close'
                 on_release: app.close_callback()
+            MyCtrlButton:
+                text: 'sm change'
+                on_release:
+                    root.manager.transition.direction = 'right'
+                    root.manager.current = 'img_view'
 
+<ImgViewScreen>:
+    Button:
+        text: 'This is the new world!'
+        on_release:
+            root.manager.transition.direction = 'left'
+            root.manager.current = 'main'
+            
 
 <MyCtrlButton@Button>
     font_size: self.height / 3
