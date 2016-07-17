@@ -45,11 +45,14 @@
                     root.manager.current = 'img_view'
 
 <ImgViewScreen>:
-    Button:
-        text: 'This is the new world!'
-        on_release:
-            root.manager.transition.direction = 'left'
-            root.manager.current = 'main'
+    BoxLayout:
+        id: full_img
+        size_hint: 1, 1
+        Button:
+            text: 'This is the new world!'
+            on_release:
+                root.manager.transition.direction = 'left'
+                root.manager.current = 'main'
             
 
 <MyCtrlButton@Button>

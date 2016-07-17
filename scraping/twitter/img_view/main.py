@@ -2,17 +2,17 @@ import os
 import time
 import fnmatch
 from kivy.app import App
-from kivy.uix.widget import Widget
 from kivy.lang import Builder
 from kivy.uix.image import Image
+from threading import Thread
+from kivy.clock import mainthread
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.behaviors import ButtonBehavior
 import re
 import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from datetime import datetime
-from threading import Thread
-from kivy.clock import mainthread
-from kivy.uix.screenmanager import ScreenManager, Screen
 
 Builder.load_file('./tview.kv')
 
@@ -78,13 +78,18 @@ class MyWidget(Screen):
 
     @mainthread
     def update(self, file_full_name):
-        im = Image(source=file_full_name, size_hint_y=None, height=300)
+        im = MyImage(source=file_full_name, size_hint_y=None, height=300)
         self.ids.illust_area.add_widget(im)
 
 
 class ImgViewScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+class MyImage(ButtonBehavior, Image):
+    def on_release(self):
+        print("release!")
 
 
 class TwitterViewApp(App):
